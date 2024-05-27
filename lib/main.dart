@@ -43,13 +43,9 @@ Future<void> loadCsvData() async {
         
     }).toList();
 
-    print("ready");
+   
 
     await box.addAll(candidates);
-  }
-  else{
-
-    print("already exist");
   }
 }
 
@@ -145,10 +141,14 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void performSearch() {
 
+    print("entrando a search");
+
     final box = Hive.box<Candidate>('candidates');
 
-    final List<Candidate> candidatesList = box.values.cast<Candidate>().toList();    
+    print(box.length);
 
+    final List<Candidate> candidatesList = box.values.cast<Candidate>().toList();    
+    print(candidatesList.length);
 
     final results = searchType == 'municipio'
         ? candidatesList.where((candidate) =>
@@ -160,6 +160,10 @@ class _SearchScreenState extends State<SearchScreen> {
             candidate.seccion.toString().compareTo(selectedMunicipioOrSeccion.toString().toLowerCase()) == 0 && 
             candidate.distrito.toLowerCase().compareTo('blank')!= 0).toList();
     
+
+    print(results.length);
+
+    print("ya sali!");
 
     List<Map<String, String>> resultData = results.map((candidate) {
       return {
@@ -173,6 +177,8 @@ class _SearchScreenState extends State<SearchScreen> {
       };
     }).toList();
 
+  print("k pacho");
+  print(resultData.length);
 
     Navigator.push(
       context,
