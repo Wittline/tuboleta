@@ -28,9 +28,11 @@ Future<void> loadCsvData() async {
   final box = Hive.box<Candidate>('candidates');
   if (box.isEmpty) {
     final rawData = await rootBundle.loadString('assets/candidates.csv');
-    List<List<dynamic>> csvData = const CsvToListConverter().convert(rawData);
+    List<List<dynamic>> csvData = const CsvToListConverter(eol:'\n').convert(rawData);
 
-
+    print(csvData.length);
+    print(csvData);
+    
     final candidates = csvData.skip(1).map((row) {
       print(row);
       return Candidate()
