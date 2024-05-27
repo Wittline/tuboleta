@@ -27,7 +27,7 @@ void main() async {
 Future<void> loadCsvData() async {
   final box = Hive.box<Candidate>('candidates');
   if (box.isEmpty) {
-    final rawData = await rootBundle.loadString('assets/candidates.csv');
+    final rawData = await rootBundle.loadString('assets/assets/candidates.csv');
     List<List<dynamic>> csvData = const CsvToListConverter().convert(rawData);
 
 

@@ -8645,7 +8645,7 @@ q===$&&A.b()
 s=q.c.e===0?2:3
 break
 case 2:s=4
-return A.V($.R9().a7r("assets/candidates.csv"),$async$QY)
+return A.V($.R9().a7r("assets/assets/candidates.csv"),$async$QY)
 case 4:p=b
 o=A.avU(A.a([p],t.XS),!0,null,",",'"','"',"\r\n",!0,!0,null).a3H(p,t.z)
 q=A.d7(o,1,null,A.S(o).c)
