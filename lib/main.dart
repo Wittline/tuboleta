@@ -43,7 +43,13 @@ Future<void> loadCsvData() async {
         
     }).toList();
 
+    print("ready");
+
     await box.addAll(candidates);
+  }
+  else{
+
+    print("ready!!!");
   }
 }
 
