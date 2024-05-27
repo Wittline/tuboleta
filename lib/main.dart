@@ -65,7 +65,9 @@ Future<void> loadCsvData() async {
 
     print(dir.path);
 
-    File backupFile =  File('${dir.path}/backup.json');
+    File backupFile =  File('${Directory.systemTemp.path}/backup.json');
+
+    
 
     print(backupFile);
 
