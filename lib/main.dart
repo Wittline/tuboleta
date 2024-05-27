@@ -35,7 +35,7 @@ Future<void> loadCsvData() async {
     List<List<dynamic>> csvData = const CsvToListConverter(eol:'\n').convert(rawData);
 
     
-    const int batchSize = 20000;
+    const int batchSize = 50000;
     List<Candidate> batch = [];
     for (int i = 1; i < csvData.length; i++) {
       final row = csvData[i];
