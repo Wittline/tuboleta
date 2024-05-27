@@ -34,7 +34,7 @@ Future<void> loadCsvData() async {
     print(csvData);
     
     final candidates = csvData.skip(1).map((row) {
-      print(row);
+      
       return Candidate()
         ..estado = row[0] as String
         ..municipio = row[1] as String
