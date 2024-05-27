@@ -16,14 +16,15 @@ class CandidateAdapter extends TypeAdapter<Candidate> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Candidate()
-      ..estado = fields[0] as String
-      ..municipio = fields[1] as String
-      ..seccion = fields[2] as int
-      ..posicion = fields[3] as String
-      ..nombre = fields[4] as String
-      ..partido = fields[5] as String
-      ..distrito = fields[6] as String;
+    return Candidate(
+      fields[0] as String,
+      fields[1] as String,
+      fields[2] as int,
+      fields[3] as String,
+      fields[4] as String,
+      fields[5] as String,
+      fields[6] as String,
+    );
   }
 
   @override

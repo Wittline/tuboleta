@@ -3,26 +3,37 @@ import 'package:hive/hive.dart';
 part 'candidate.g.dart';
 
 @HiveType(typeId: 0)
-class Candidate {
+class Candidate extends HiveObject {
   @HiveField(0)
-  late String estado;
+  String estado;
 
   @HiveField(1)
-  late String municipio;
+  String municipio;
 
   @HiveField(2)
-  late int seccion;
+  int seccion;
 
   @HiveField(3)
-  late String posicion;
+  String posicion;
 
   @HiveField(4)
-  late String nombre;
+  String nombre;
 
   @HiveField(5)
-  late String partido;
+  String partido;
 
   @HiveField(6)
-  late String distrito;
-}
+  String distrito;
 
+  Candidate(this.estado, this.municipio, this.seccion, this.posicion, this.nombre, this.partido, this.distrito);
+  
+  Map<String, dynamic> toJson() => {
+     'estado': estado, 
+     'municipio': municipio, 
+     'seccion': seccion, 
+     'posicion': posicion,
+     'nombre': nombre, 
+     'partido': partido, 
+     'distrito': distrito
+  };
+}

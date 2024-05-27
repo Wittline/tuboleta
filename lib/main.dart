@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -19,7 +23,7 @@ void main() async {
   Hive.registerAdapter(CandidateAdapter());
   await Hive.openBox<Candidate>('candidates');
 
-  await loadCsvData();
+  // await loadCsvData();
 
   runApp(MyApp());
 }
@@ -31,22 +35,52 @@ Future<void> loadCsvData() async {
     List<List<dynamic>> csvData = const CsvToListConverter(eol:'\n').convert(rawData);
 
     
-    final candidates = csvData.skip(1).map((row) {
-      
-      return Candidate()
-        ..estado = row[0] as String
-        ..municipio = row[1] as String
-        ..seccion = row[2] as int
-        ..posicion = row[3] as String
-        ..nombre = row[4] as String
-        ..partido = row[5] as String
-        ..distrito = row[6] as String;
-        
-    }).toList();
+    const int batchSize = 5000;
+    List<Candidate> batch = [];
+    for (int i = 1; i < csvData.length; i++) {
+      final row = csvData[i];
+      final candidate = Candidate(row[0] , row[1] ,row[2] ,row[3] ,row[4] ,row[5] ,row[6]);        
 
-    await box.addAll(candidates);
+      batch.add(candidate);
+
+      if (batch.length == batchSize) {
+        print(batch.length);
+        await box.addAll(batch);
+        batch.clear();
+      }
+    }
+
+    if (batch.isNotEmpty) {
+      await box.addAll(batch);
+      }
+
+    
+    final List<Candidate> candidatesList = box.values.cast<Candidate>().toList();     
+
+    String json = jsonEncode(candidatesList);
+
+    Directory dir =  await _getDirectory();  
+
+    File backupFile =  File('${dir.path}/backup.json');
+
+    print(backupFile);
+
+    await backupFile.writeAsString(json);
   }
+
+
 }
+
+  Future<Directory> _getDirectory() async {
+    Directory? directory = await getExternalStorageDirectory();
+    print(directory!.path);
+    const String pathExt = '/backups/';
+    Directory newDirectory = Directory(directory!.path + pathExt);
+    if (await newDirectory.exists() == false) {
+      return newDirectory.create(recursive: true);
+    }
+    return newDirectory;
+  }
 
 class MyApp extends StatelessWidget {
   @override
@@ -69,7 +103,20 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: SearchScreen(),
+      home: FutureBuilder(
+        future: loadCsvData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(color: Colors.black ),
+              ),
+            );
+          } else {
+            return SearchScreen();
+          }
+        },
+      ),
     );
   }
 }
@@ -159,10 +206,7 @@ class _SearchScreenState extends State<SearchScreen> {
       return {
         'nombre': candidate.nombre,        
         'partido': candidate.partido,
-        'posicion': candidate.posicion,
-        'distrito': candidate.distrito,
-        'estado': candidate.estado,
-        'municipio': candidate.municipio,
+        'posicion': candidate.posicion,                        
         'seccion': candidate.seccion.toString(),
       };
     }).toList();
@@ -344,16 +388,14 @@ class ResultScreen extends StatelessWidget {
                         columns: [                        
                           DataColumn(label: Text('Candidato', style: Theme.of(context).textTheme.titleLarge)),
                           DataColumn(label: Text('Partido', style: Theme.of(context).textTheme.titleLarge)),
-                          DataColumn(label: Text('Posición', style: Theme.of(context).textTheme.titleLarge)),
-                          DataColumn(label: Text('Distrito', style: Theme.of(context).textTheme.titleLarge)),
+                          DataColumn(label: Text('Posición', style: Theme.of(context).textTheme.titleLarge)),                          
                           DataColumn(label: Text('Sección', style: Theme.of(context).textTheme.titleLarge)),
                         ],
                         rows: results.map((result) {
                           return DataRow(cells: [
                             DataCell(Text(result['nombre']!, style: Theme.of(context).textTheme.bodyLarge)),
                             DataCell(Text(result['partido']!, style: Theme.of(context).textTheme.bodyLarge)),
-                            DataCell(Text(result['posicion']!, style: Theme.of(context).textTheme.bodyLarge)),
-                            DataCell(Text(result['distrito']!, style: Theme.of(context).textTheme.bodyLarge)),
+                            DataCell(Text(result['posicion']!, style: Theme.of(context).textTheme.bodyLarge)),                       
                             DataCell(Text(result['seccion']!, style: Theme.of(context).textTheme.bodyLarge)),
                           ]);
                         }).toList(),
