@@ -35,7 +35,7 @@ Future<void> loadCsvData() async {
     List<List<dynamic>> csvData = const CsvToListConverter(eol:'\n').convert(rawData);
 
     
-    const int batchSize = 5000;
+    const int batchSize = 20000;
     List<Candidate> batch = [];
     for (int i = 1; i < csvData.length; i++) {
       final row = csvData[i];
@@ -54,39 +54,11 @@ Future<void> loadCsvData() async {
       await box.addAll(batch);
       }
 
-    
-    final List<Candidate> candidatesList = box.values.cast<Candidate>().toList();
-    print("listo");
-
-    String json = jsonEncode(candidatesList);
-
-    print("json");
-    Directory dir =  await _getDirectory();  
-
-    print(dir.path);
-
-    File backupFile =  File('${Directory.systemTemp.path}/backup.json');
-
-    
-
-    print(backupFile);
-
-    await backupFile.writeAsString(json);
   }
 
 
 }
 
-  Future<Directory> _getDirectory() async {
-    Directory? directory = await getExternalStorageDirectory();
-    print(directory!.path);
-    const String pathExt = '/backups/';
-    Directory newDirectory = Directory(directory!.path + pathExt);
-    if (await newDirectory.exists() == false) {
-      return newDirectory.create(recursive: true);
-    }
-    return newDirectory;
-  }
 
 class MyApp extends StatelessWidget {
   @override
