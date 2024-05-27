@@ -30,8 +30,6 @@ Future<void> loadCsvData() async {
     final rawData = await rootBundle.loadString('assets/candidates.csv');
     List<List<dynamic>> csvData = const CsvToListConverter(eol:'\n').convert(rawData);
 
-    print(csvData.length);
-    print(csvData);
     
     final candidates = csvData.skip(1).map((row) {
       
