@@ -55,11 +55,15 @@ Future<void> loadCsvData() async {
       }
 
     
-    final List<Candidate> candidatesList = box.values.cast<Candidate>().toList();     
+    final List<Candidate> candidatesList = box.values.cast<Candidate>().toList();
+    print("listo");
 
     String json = jsonEncode(candidatesList);
 
+    print("json");
     Directory dir =  await _getDirectory();  
+
+    print(dir.path);
 
     File backupFile =  File('${dir.path}/backup.json');
 
